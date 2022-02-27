@@ -1,0 +1,9 @@
+LICENCE
+README.md
+setup.py
+src/curry_fabric/__init__.py
+src/curry_fabric/curriedfunc.py
+src/curry_fabric.egg-info/PKG-INFO
+src/curry_fabric.egg-info/SOURCES.txt
+src/curry_fabric.egg-info/dependency_links.txt
+src/curry_fabric.egg-info/top_level.txt
