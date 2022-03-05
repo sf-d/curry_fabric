@@ -1,10 +1,5 @@
 from itertools import product, repeat
-
 import numpy as np
-
-np.set_printoptions(precision=3, suppress=True)
-STEPS = 3
-
 
 class p:
     def __init__(self, n, intrv):
@@ -13,49 +8,32 @@ class p:
         self.intrv = intrv
         self.vals = np.linspace(self.start, self.stop, n)
 
-
-
 def curry(func):
     def curried(*args):
+
         if len(args) == func.__code__.co_argcount:
-            steps_=set()
-            to_pr=[]
+            steps_ = set()
+            to_pr = []
             for arg in args:
                 v = arg.vals
                 to_pr.append(v)
                 steps_.add(len(v))
-            if len(steps_)==1:
+            if len(steps_) == 1:
                 list_test = np.asarray(list(product(*to_pr)))
-                answs = []
+                answers = []
                 for i in list_test:
-                    p = func(*(i))
+                    ans = func(*(i))
 
-                    answs.append([*i, p])
+                    answers.append([*i, ans])
 
-                # reshp_list=list_test.reshape((*repeat(list(steps_)[0], func.__code__.co_argcount),func.__code__.co_argcount))
-                reshp_answs = np.asarray(answs).reshape(
+                # reshp_list=list_test.reshape((*repeat(list(steps_)[0], func.__code__.co_argcount),
+                # func.__code__.co_argcount))
+                reshape_answer = np.asarray(answers).reshape(
                     (*repeat(list(steps_)[0], func.__code__.co_argcount), func.__code__.co_argcount + 1))
-                return reshp_answs
+                return reshape_answer
             else:
-                print(f'steps count not identic: {steps_}')
+                print(f'steps count not identical: {steps_}')
         else:
-            return (lambda *x: curried(*(args + x)))              
+            return lambda *x: curried(*(args + x))
+
     return curried
-
-
-lk = p(STEPS, (10, 30))
-kit = p(STEPS, (1000, 5000))
-pp = p(STEPS, (1, 5))
-pd = p(STEPS, (0.1, 0.7))
-ld = p(STEPS, (100, 300))
-
-
-@curry
-def test(lk, kit, pp, pd, ld):
-    return lk * ((kit * pp * pd) / ld)
-
-
-ans = test(lk, kit, pp, pd, ld)
-
-# al = list_t.T[:,:,:,1,1,1]
-print(ans, ans.T)
