@@ -1,10 +1,8 @@
 from itertools import product, repeat
-import numpy as np
-from itertools import product, repeat
 
 import numpy as np
 
-np.set_printoptions(suppress=True)
+np.set_printoptions(precision=3, suppress=True)
 STEPS = 3
 
 
@@ -31,10 +29,9 @@ def curry(func):
                 answs = []
                 for i in list_test:
                     p = func(*(i))
-                    # возвращвем один массив вместо двух, эта реализация может упростить дальнейшую работу с шейпом, но это не точно
+
                     answs.append([*i, p])
 
-                # соответственно один решейп
                 # reshp_list=list_test.reshape((*repeat(list(steps_)[0], func.__code__.co_argcount),func.__code__.co_argcount))
                 reshp_answs = np.asarray(answs).reshape(
                     (*repeat(list(steps_)[0], func.__code__.co_argcount), func.__code__.co_argcount + 1))
@@ -58,7 +55,6 @@ def test(lk, kit, pp, pd, ld):
     return lk * ((kit * pp * pd) / ld)
 
 
-# один аутпут
 ans = test(lk, kit, pp, pd, ld)
 
 # al = list_t.T[:,:,:,1,1,1]
