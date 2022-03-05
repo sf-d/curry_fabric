@@ -1,5 +1,7 @@
-from itertools import product, repeat
+from itertools import product
+
 import numpy as np
+
 
 class p:
     def __init__(self, n, intrv):
@@ -8,29 +10,28 @@ class p:
         self.intrv = intrv
         self.vals = np.linspace(self.start, self.stop, n)
 
-def curry(func):
+
+def curry(func: callable) -> callable:
+    """
+    :rtype: callable
+    """
+
     def curried(*args):
 
         if len(args) == func.__code__.co_argcount:
-            steps_ = set()
-            to_pr = []
-            for arg in args:
-                v = arg.vals
-                to_pr.append(v)
-                steps_.add(len(v))
+            steps_: set[int] = set()
+
+            steps_.update([len(arg.vals) for arg in args])  # сет получаем через update чтобы облегчить синтаксис
+
+            to_pr = [arg.vals for arg in args]  # упрощаем цикл
             if len(steps_) == 1:
+                # векторизируем функцию под numpy аргументы, чтобы избежать длинного цикла подстановки
+                vfunc = np.vectorize(func)
+
                 list_test = np.asarray(list(product(*to_pr)))
-                answers = []
-                for i in list_test:
-                    ans = func(*(i))
+                answers = vfunc(*list_test.T)
 
-                    answers.append([*i, ans])
-
-                # reshp_list=list_test.reshape((*repeat(list(steps_)[0], func.__code__.co_argcount),
-                # func.__code__.co_argcount))
-                reshape_answer = np.asarray(answers).reshape(
-                    (*repeat(list(steps_)[0], func.__code__.co_argcount), func.__code__.co_argcount + 1))
-                return reshape_answer
+                return np.c_[list_test, answers]
             else:
                 print(f'steps count not identical: {steps_}')
         else:

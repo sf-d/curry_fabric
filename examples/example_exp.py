@@ -3,6 +3,8 @@ from curry_fabric.curriedfunc import curry, p
 import numpy as np
 from sklearn.decomposition import PCA
 
+np.set_printoptions(precision=3, suppress=True)
+
 STEPS = 3
 
 lk = p(STEPS, (10, 30))
@@ -16,3 +18,8 @@ ld = p(STEPS, (100, 300))
 def test(lk, kit, pp, pd, ld):
     return lk * ((kit * pp * pd) / ld)
 
+
+def test_(lk, kit, pp, pd, ld):
+    return lk * ((kit * pp * pd) / ld)
+
+print(test_( 30. ,   5000. ,     5. ,      0.7 ,   300. ))
