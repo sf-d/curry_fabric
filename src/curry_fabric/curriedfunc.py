@@ -1,13 +1,15 @@
-import math
-import operator
-import functools
 from itertools import product, repeat
-from textwrap import wrap
 import numpy as np
+from itertools import product, repeat
+
+import numpy as np
+
 np.set_printoptions(suppress=True)
-STEPS = 2
+STEPS = 3
+
+
 class p:
-    def __init__ (self, n, intrv):
+    def __init__(self, n, intrv):
         self.n = n
         self.start, self.stop = intrv
         self.intrv = intrv
@@ -26,13 +28,17 @@ def curry(func):
                 steps_.add(len(v))
             if len(steps_)==1:
                 list_test = np.asarray(list(product(*to_pr)))
-                answs=[]
+                answs = []
                 for i in list_test:
                     p = func(*(i))
-                    answs.append(p)
-                reshp_list=list_test.reshape((*repeat(list(steps_)[0], func.__code__.co_argcount),func.__code__.co_argcount))
-                reshp_answs=np.asarray(answs).reshape((*repeat(list(steps_)[0],func.__code__.co_argcount),1))
-                return reshp_list, reshp_answs
+                    # возвращвем один массив вместо двух, эта реализация может упростить дальнейшую работу с шейпом, но это не точно
+                    answs.append([*i, p])
+
+                # соответственно один решейп
+                # reshp_list=list_test.reshape((*repeat(list(steps_)[0], func.__code__.co_argcount),func.__code__.co_argcount))
+                reshp_answs = np.asarray(answs).reshape(
+                    (*repeat(list(steps_)[0], func.__code__.co_argcount), func.__code__.co_argcount + 1))
+                return reshp_answs
             else:
                 print(f'steps count not identic: {steps_}')
         else:
@@ -40,22 +46,20 @@ def curry(func):
     return curried
 
 
-
-lk = p(STEPS,(10,30))
-kit = p(STEPS,(1000,5000))
-pp = p(STEPS,(1,5))
-pd = p(STEPS,(0.1,0.7))
-ld = p(STEPS,(100,300))
+lk = p(STEPS, (10, 30))
+kit = p(STEPS, (1000, 5000))
+pp = p(STEPS, (1, 5))
+pd = p(STEPS, (0.1, 0.7))
+ld = p(STEPS, (100, 300))
 
 
 @curry
 def test(lk, kit, pp, pd, ld):
-    return lk*((kit*pp*pd)/ld) 
-
-list_t, ans = test(lk, kit, pp, pd, ld)
+    return lk * ((kit * pp * pd) / ld)
 
 
-print (list_t[0,0,0,0,0,:], ans[0,0,0,0,0,0])
+# один аутпут
+ans = test(lk, kit, pp, pd, ld)
 
-
-
+# al = list_t.T[:,:,:,1,1,1]
+print(ans, ans.T)
