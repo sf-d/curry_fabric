@@ -5,7 +5,7 @@ from itertools import product, repeat
 from textwrap import wrap
 import numpy as np
 np.set_printoptions(suppress=True)
-STEPS = 2
+STEPS = 3
 class p:
     def __init__ (self, n, intrv):
         self.n = n
@@ -41,21 +41,21 @@ def curry(func):
 
 
 
-lk = p(STEPS,(10,30))
-kit = p(STEPS,(1000,5000))
-pp = p(STEPS,(1,5))
-pd = p(STEPS,(0.1,0.7))
-ld = p(STEPS,(100,300))
+liv_lot = p(STEPS,(100000,500000))
+kit = p(STEPS,(1,10))
+liv_dens = p(STEPS,(1,10))
+child = p(STEPS,(10,100))
+ch_lot_dens = p(STEPS,(1,10))
 
 
 @curry
-def test(lk, kit, pp, pd, ld):
-    return lk*((kit*pp*pd)/ld) 
+def S_child_lot(liv_lot, kit, liv_dens, child, ch_lot_dens): 
+    return liv_lot*((kit)/(liv_dens/10000)*child*(ch_lot_dens/10000)) 
 
-list_t, ans = test(lk, kit, pp, pd, ld)
-
-
-print (list_t[0,0,0,0,0,:], ans[0,0,0,0,0,0])
+list_t, ans = S_child_lot(liv_lot, kit, liv_dens, child, ch_lot_dens)
 
 
+print (list_t[0,0,0,:,0])
+
+print (list_t[1,1,1,:,1])
 
