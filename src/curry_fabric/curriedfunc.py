@@ -58,6 +58,7 @@ def D_sn(L, A):
     return L / A
 
 test_ar = D_sn(L, A)
+print (test_ar)
 
 
 #Целевые показатели
@@ -67,12 +68,10 @@ L_goal = 39000000
 goal_ar = np.array([L_goal, A_goal, D_sn_goal])
 
 
-for t in test_ar:
-    dist = np.linalg.norm(t- goal_ar)
-    print(dist)
+'for t in test_ar:'
+'dist = np.linalg.norm(t- goal_ar)'
     
-K = 5
-nearest_partition = np.argpartition(dist, K + 1, axis=1)
+    
 
 
 # operations with array if we have more then 3 values
