@@ -1,4 +1,4 @@
-import timeit
+
 from curry_fabric.curriedfunc import curry, p
 import sys
 import numpy as np
