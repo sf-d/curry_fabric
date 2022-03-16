@@ -4,8 +4,9 @@ from shapely.geometry import MultiPoint, Polygon, LineString
 import plotly.graph_objects as go
 from scipy.spatial import ConvexHull
 import numpy as np
+from mixpython import geometry as mp
 
-points =   np.asarray([[[661.0, 249.0], [750.0, 274.0], [635.0, 276.0]], 
+points =   np.array([[[661.0, 249.0], [750.0, 274.0], [635.0, 276.0]], 
             [[706.0, 355.0], [635.0, 276.0], [750.0, 274.0]], 
             [[706.0, 355.0], [750.0, 274.0], [778.0, 334.0]], 
             [[778.0, 334.0], [672.0, 398.0], [706.0, 355.0]], 
@@ -14,19 +15,54 @@ points =   np.asarray([[[661.0, 249.0], [750.0, 274.0], [635.0, 276.0]],
             [[778.0, 334.0], [747.0, 511.0], [672.0, 398.0]]])
 
 
+
 # key = list of all points of every minimum polygon 
 # нужно разделить предарительно лист всех точек на отдельные полигоны
 
-class Treenode:
-    
-    def __init__(self,points_list, key):
-        self.trig = points_list
-        self.left = None
-        self.right = None
-        self.place = key
-        self.minrect = self.min_b_rect()
-        self.area = self.areadif()
 
+
+# класс предполанает вгоняние точек по 3 и построения на основе них дерева с вычислением всех баунд рект
+# далее функция которая записывает классы
+# snachala slivat'?
+
+def split_array (obj):
+    array = []
+    for i in range(len(obj)):
+        if i <= (len(obj) - 3):
+            ar = np.concatenate((obj[i], obj[i+1], obj[i+2]), axis = 0)
+            array.append(ar)
+        elif i == len(obj)-2:
+            ar_= np.concatenate((obj[-2], obj[-1]), axis=0)
+            array.append(ar_)
+        else:
+            ar__ = obj[-1]
+            array.append( ar__)
+    return np.asarray(array, dtype=object)
+
+o = split_array(points)
+print(o.shape)
+
+
+
+def bound_rect (points_ar):
+    
+    return b_rect
+    
+    
+
+
+
+
+
+"""class Tree_count:
+    def __init__ (self, f_val, s_val, th_val):
+        self.f_val = f_val
+        self.s_val = s_val
+        self.th_val = th_val
+        self.rect_one = f_val
+        self.rect_two = self.min_b_rect()
+        
+        
     def min_b_rect(self) :
         pi2 = np.pi / 2.
         point = self.trig
@@ -80,23 +116,29 @@ class Treenode:
         rval[3] = np.dot([x1, y1], r)
         return rval
 
-    def areadif (self):
-        triangle = (Polygon(self.trig)).area
+    def areadif_first (self):
+        triangle = (Polygon(self.f_val)).area
         b_rec = (Polygon(self.minrect)).area
         res = triangle / b_rec
         return res
-
-
-# функция написания дерева, в котором предполагается объединение нескольких элементов  
-
-#def tree_func(first_el, sec_el, th_el):
     
- #   return 
+ 
+ 
+ 
+
+ 
+ 
+    
+
+
+
+
+
+
+
 
 l=[Treenode(points[0], 1), Treenode(points[1], 2), Treenode(points[2], 3),
 Treenode(points[3], 4),
 Treenode(points[4], 5),
 Treenode(points[5], 6),
-Treenode(points[6], 7)]
-for i in l: 
-    print (i.area)
+Treenode(points[6], 7)]"""
