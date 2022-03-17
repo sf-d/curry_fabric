@@ -6,13 +6,13 @@ from scipy.spatial import ConvexHull
 import numpy as np
 from mixpython import geometry as mp
 
-points =   np.array([[[661.0, 249.0], [750.0, 274.0], [635.0, 276.0]], 
+points =   [[[661.0, 249.0], [750.0, 274.0], [635.0, 276.0]], 
             [[706.0, 355.0], [635.0, 276.0], [750.0, 274.0]], 
             [[706.0, 355.0], [750.0, 274.0], [778.0, 334.0]], 
             [[778.0, 334.0], [672.0, 398.0], [706.0, 355.0]], 
             [[606.0, 492.0], [672.0, 398.0], [747.0, 511.0]], 
             [[598.0, 428.0], [672.0, 398.0], [606.0, 492.0]], 
-            [[778.0, 334.0], [747.0, 511.0], [672.0, 398.0]]])
+            [[778.0, 334.0], [747.0, 511.0], [672.0, 398.0]]]
 
 
 
@@ -29,25 +29,53 @@ def split_array (obj):
     array = []
     for i in range(len(obj)):
         if i <= (len(obj) - 3):
-            ar = np.concatenate((obj[i], obj[i+1], obj[i+2]), axis = 0)
+            ar = (*obj[i], *obj[i+1], *obj[i+2])
             array.append(ar)
         elif i == len(obj)-2:
-            ar_= np.concatenate((obj[-2], obj[-1]), axis=0)
+            ar_= (*obj[-2], *obj[-1])
             array.append(ar_)
         else:
             ar__ = obj[-1]
             array.append( ar__)
-    return np.asarray(array, dtype=object)
+    return array
 
-o = split_array(points)
-print(o.shape)
+splitted_array = split_array(points)
 
+# нужно точно такую же херню применить к последовательности эррэей, т.е дописать разветвоение (возможно этот цикл должен быть чуть сложнее и генерить новые списки по ходу) 
+#те паттерн развивается в зависимости от того какой минимальный ректангл был выбран - нулевой, первый или второй
+#возможно первое значение независимо от точек
+# v zelom mozhno dopisat dlya kazhdogo 1+2 i 1+2+3 i t d otdelniy pattern
 
+########### PROVERIT' VICHISLENIYA V FORMULE!!!!
 
 def bound_rect (points_ar):
+    p_areas = []
+    for p in points_ar:
     
-    return b_rect
-    
+        if points_ar.index(p) <= (len(points_ar) - 3):
+            b_rect_one, b_rect_oneone = Polygon(mp.minimum_bound_rectangle(np.asarray(p[0:3]))).area, Polygon(mp.minimum_bound_rectangle(np.asarray(p[3:6]))).area
+            b_rect_two = Polygon(mp.minimum_bound_rectangle(np.asarray(p[0:6]))).area + Polygon(mp.minimum_bound_rectangle(np.asarray(p[6:]))).area
+            b_rect_three = Polygon(mp.minimum_bound_rectangle(np.asarray(p))).area
+            c_one = (b_rect_one / (Polygon(p[0:3]).area) + (b_rect_oneone / Polygon(p[3:6]).area))
+            c_two = b_rect_two / (Polygon(p[0:3]).area + Polygon(p[3:6]).area + Polygon(p[6:]).area)
+            c_three = b_rect_three / (Polygon(p[0:3]).area + Polygon(p[3:6]).area + Polygon(p[6:]).area)
+            p_areas.append([c_one, c_two, c_three])
+        elif points_ar.index(p) == len(points_ar)-2:
+            b_rect__one = Polygon(mp.minimum_bound_rectangle(np.asarray(p[0:3]))).area + Polygon(mp.minimum_bound_rectangle(np.asarray(p[3:]))).area
+            b_rect__two = Polygon(mp.minimum_bound_rectangle(np.asarray(p))).area
+            c__one = b_rect__one / (Polygon(p[0:3]).area + Polygon(p[3:6]).area)
+            c__two = b_rect__two / (Polygon(p[0:3]).area + Polygon(p[3:6]).area)
+            p_areas.append([c__one, c__two])
+        else:
+            b_rect___one = Polygon(mp.minimum_bound_rectangle(np.asarray(p))).area
+            c___one = b_rect___one / Polygon(p).area
+            p_areas.append(c___one)            
+    return p_areas
+
+
+rectangles = bound_rect(splitted_array)
+print(rectangles)
+print (splitted_array)
     
 
 
